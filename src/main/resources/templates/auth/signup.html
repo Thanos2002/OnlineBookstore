@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <style>
+        /* Custom CSS for the application */
+        body {
+            background-color: #c9f3fc; /* Light gray */
+        }
+
+        .container {
+            max-width: 600px;
+            width: 80%; /* Adjust the width as needed */
+            margin: 0 auto; /* Center the container horizontally */
+            position: fixed;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff; /* White background */
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Shadow */
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        form {
+            animation: slideIn 0.5s ease-out;
+        }
+    </style>
+    <title>Register</title>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <form
+            action="#"
+            th:action="@{/save}" th:object="${user}" method="post">
+        <h3>Registration</h3>
+        <input type="text" th:field="*{username}" placeholder="User Name" /> <br/><br/>
+        <input type="password" th:field="*{password}" placeholder="Password" /> <br/><br/>
+        <select th:field="*{role}" required>
+            <option value="">Select</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="USER">USER</option>
+        </select> <br/><br/>
+
+        <button type="submit" class="btn btn-info col-2">Register</button>
+        <a th:href="@{/login}" class="btn btn-primary col-2"> Login</a>
+
+        <div th:if="${param.error}"><p>Registration Error.</p></div> <br/>
+
+        <div th:utext="${successMessage}"></div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f8ff; /* Light grey background */
+            padding-top: 40px;
+        }
+        h6{
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .form-group label {
+            display: inline-block;
+        }
+
+    </style>
+    <title>Profile</title>
+</head>
+
+
+<body>
+<div class="container">
+    <script th:inline="javascript">
+        function validateForm() {
+            var authorCheckboxes = document.querySelectorAll('input[name="favouriteAuthors"]:checked');
+            var categoryCheckboxes = document.querySelectorAll('input[name="favouriteCategories"]:checked');
+
+            if (authorCheckboxes.length === 0 || categoryCheckboxes.length === 0) {
+                alert("Please select at least one author and one category.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+
+    <form th:action="@{/user/saveProfile}" th:object="${userprofile}" method="post" onsubmit="return validateForm()">
+        <h3>Profile Settings</h3>
+        <br /><br />
+        <input type="hidden" id="id" class="form-control" name="id" th:value="${userprofile.id}" />
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <h6> Your Username:</h6>
+                <input type="text" id="username" class="form-control" name="username" th:value="${userprofile.username}" th:placeholder="Username" required /><br /><br />
+            </div>
+            <div class="form-group col-md-6">
+                 <h6> Your Fullname:</h6>
+                <input type="text" id="fullName" class="form-control" name="fullName" th:value="${userprofile.fullName}" th:placeholder="FullName" required /><br /><br />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <h6> Your Age:</h6>
+                <input type="number" id="age" class="form-control" name="age" th:value="${userprofile.age}" th:placeholder="Age" required /><br /><br />
+            </div>
+            <div class="form-group col-md-6">
+                <h6> Your Phone Number:</h6>
+                <input type="tel" id="phoneNumber" class="form-control" name="phoneNumber" th:value="${userprofile.phoneNumber}" th:placeholder="PhoneNumber" required /><br /><br />
+            </div>
+        </div>
+        <h6>User Authors:</h6><br>
+        <div class="form-row">
+            <div th:each="author : ${authors}">
+                <input type="checkbox" th:id="${author.authorid}" th:value="${author.authorid}"  th:field="*{favouriteAuthors}" />
+                <label th:text="${author.authorName}"></label>&nbsp;&nbsp;
+            </div>
+
+        </div><br><br>
+        <h6>User Categories:</h6><br>
+        <div class="form-row">
+            <div th:each="category : ${categories}">
+                <input type="checkbox" th:id="${category.categoryid}" th:value="${category.categoryid}"  th:field="*{favouriteCategories}"/>
+                <label th:text="${category.categoryname}"></label>&nbsp;&nbsp;
+            </div>
+        </div>
+        <br><br>
+        <button th:href="@{/user/saveProfile}" type="submit" class="btn btn-info ">Save</button>
+        <br>
+
+        <div th:if="${param.error}"><p>Username or Password is invalid.</p></div>
+        <span th:utext="${errorMessage}"></span>
+        <span th:utext="${successMessage}"></span>
+
+   </form>
+    <br><br>
+    <!--
+    <h6>Check Your Favourite Authors:</h6>
+    <a th:href="@{/user/createFavAuthors}" class="btn btn-warning ">Add Favourite Authors</a>
+    -->
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #adbace; /* Light grey background */
+            padding-top: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
+        }
+    </style>
+    <title>Offer Form</title>
+</head>
+<body>
+
+<div class="container">
+    <script th:inline="javascript">
+        function validateForm() {
+            var category = document.getElementById('bookCategory').value;
+            var authors = document.getElementById('bookAuthors').value;
+
+            if (!category || !authors) {
+                alert("Please select a category and at least one author.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <h2 class="text-center mb-4">Create Book Offer</h2>
+    <form action="/user/saveoffer" th:object="${bookOffer}" onsubmit="return validateForm()" >
+        <input type="hidden" id="bookid" class="form-control" name="bookid" th:value="${bookOffer.bookid}" />
+        <div class="form-group">
+            <h6>Title</h6>
+            <input type="text" id="title" class="form-control" name="title" th:value="*{title}" th:placeholder="Title" required />
+        </div>
+
+        <div class="form-row">
+            <label for="bookCategory">Category</label>
+            <div class="input-group mb-3">
+                <select class="custom-select" id="bookCategory" name="bookCategory" required>
+                    <option value="" selected>Choose...</option>
+                    <option th:each="category : ${categories}" th:value="${category.categoryid}" th:text="${category.categoryname}" th:field="*{bookCategory}"></option>
+                </select>
+                <div class="input-group-append">
+                    <label class="input-group-text">Options</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <label for="bookAuthors">Author(s)</label>
+            <div class="input-group mb-3">
+                <select class="custom-select" id="bookAuthors" name="bookAuthors" multiple required>
+                    <option th:each="author : ${authors}" th:value="${author.authorid}" th:text="${author.authorName}" th:field="*{bookAuthors}"></option>
+                </select>
+            </div>
+            <a th:href="@{/user/addAuthor}" class="btn btn-warning btn-sm">Add new Author</a>
+            <span th:utext="${successMessageAuthor}" style="padding-left: 10px; font-size: small"></span>
+            <span th:utext="${errorMessage}" style="padding-left: 10px; font-size: small"></span>
+        </div><br>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea rows="6" name="description" id="description" placeholder="Give a description" class="form-control" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </form>
+</div>
+
+
+</body>
+</html>
+

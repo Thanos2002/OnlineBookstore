@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+
+            background-color: #cce5ff;
+            padding-top: 50px;
+        }
+        .jumbotron {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #007bff;
+            text-align: center;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn-container .btn {
+            margin: 0 10px;
+        }
+        .user-info {
+            text-align: center;
+            font-size: 20px; /* Change the font size */
+            font-weight: inherit; /* Make it bold */
+            margin-bottom: 10px; /* Add some spacing */
+            color: #5d666e;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="jumbotron">
+
+    <h2 class="display-4">Welcome to our Online Bookstore</h2>
+    <hr>
+
+    <div sec:authorize="hasRole('ROLE_ANONYMOUS')" class="btn-container">
+        <a th:href="@{/login}" class="btn btn-info">Login</a>
+        <a th:href="@{/register}" class="btn btn-primary">Register</a>
+    </div>
+
+    <div sec:authorize="isAuthenticated()" class="user-info">
+        <p>Logged as: <span sec:authentication="name"></span>
+                     <span sec:authentication="authorities"></span></p>
+
+        <div sec:authorize="hasAuthority('USER')" class="btn-container">
+            <a th:href="@{/user/main_menu}" class="btn btn-primary">User Main Menu</a>
+            <a th:href="@{/logout}" class="btn btn-danger">Logout</a>
+        </div>
+
+        <div sec:authorize="hasAuthority('ADMIN')" class="btn-container">
+            <a th:href="@{/admin/main_menu}" class="btn btn-primary">Admin Main Menu</a>
+            <a th:href="@{/logout}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

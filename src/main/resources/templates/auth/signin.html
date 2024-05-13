@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        /* Προσαρμοσμένος CSS για την εφαρμογή */
+        body {
+            background-color: #cce5ff; /* Φωτεινό γκρι */
+        }
+
+        .login-form {
+            position: absolute;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff; /* Λευκό φόντο */
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Σκιά */
+            width: 300px; /* Set the width of the form */
+        }
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        form {
+            animation: slideIn 0.5s ease-out;
+        }
+    </style>
+
+    <title>Login</title>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="login-form">
+        <form th:action="@{/login}" method="POST">
+            <h3 th:text="Login"></h3>
+            <input type="text" name="username" th:placeholder="Username"/><br/><br/>
+            <input type="password" th:placeholder="Password" name="password"/><br/><br/>
+            <button type="Submit" class="btn btn-info col-12 mb-3">Login</button>
+            <a th:href="@{/register}" class="btn btn-primary col-12">Register</a><br/>
+
+            <div th:if="${param.error}">
+                <p>Username or Password is invalid.</p>
+            </div>
+            <div th:if="${param.saveError}">
+                <p>Error: Unable to save profile information!</p>
+            </div>
+            <span th:utext="${successMessage}"></span>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+

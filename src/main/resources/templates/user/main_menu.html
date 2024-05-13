@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Font - Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            background-image: url("https://webmadewell.com/wp-content/uploads/2018/01/img-bg-sample-parallax-header.jpg");
+            background-size: cover;
+            background-position: center;
+            padding-top: 100px;
+            text-align: center;
+        }
+        h2 {
+            color: #254662;
+            font-weight: bold;
+        }
+        .main-menu-container {
+            color: #254662;
+            max-width: 600px;
+            padding-top: 70px;
+            margin: auto;
+        }
+        .jumbotron {
+            background-color: #eaf3ff;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.2);
+        }
+        h4 {
+            color: #5d666e; /* Light grey color */
+            font-weight: normal;
+        }
+        .list-group-item {
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        .list-group-item:hover {
+            background-color: #e4c4ad;
+            color: #fdfdfd;
+        }
+    </style>
+
+    <title>User Main Menu</title>
+</head>
+
+<body>
+
+<div class="container main-menu-container">
+    <div class="jumbotron">
+        <h2 class="display-4">Main Menu</h2>
+
+        <h4>Welcome  <span th:text="${userProfile.username}" ></span><br>
+            <span sec:authentication="authorities" style="position: absolute; top: 40px; left: 30px; color: #254662; " ></span> </h4>
+
+        <span th:utext="${successMessage}"></span>
+        <a th:href="@{/}" class="list-group-item list-group-item-action">Home</a>
+        <a th:href="@{/user/retrieveProfile}" class="list-group-item list-group-item-action">Profile</a>
+        <a th:href="@{/user/list}" class="list-group-item list-group-item-action">My Book Offers</a>
+        <a th:href="@{/user/bookRequests}" class="list-group-item list-group-item-action">My Book Requests</a>
+        <a th:href="@{/user/listAll}" class="list-group-item list-group-item-action">Search Book Offers</a>
+        <a th:href="@{/logout}" class="list-group-item list-group-item-action">Logout</a>
+
+
+    </div>
+
+</div>
+
+</body>
+</html>
+

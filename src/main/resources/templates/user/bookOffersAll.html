@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f8ff; /* Light grey background */
+            padding-top: 40px;
+        }
+        .book {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .book-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .book-description {
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        .book-details {
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+    <title>OffersAll</title>
+</head>
+<body>
+
+<div class="container">
+
+    <h3>Book Offers</h3>
+    <div class="book-container" style="margin-top: 20px;">
+        <div th:each="book : ${bookOffers}" class="book">
+            <div class="book-title" th:text="${book.title}"></div>
+            <div class="book-description" th:text="${book.description}"></div>
+            <div class="book-details"> Authors:
+                <span th:each="bookAuthor : ${book.bookAuthors}"
+                      th:text="${bookAuthor.authorName} + ' ,'" class="mr-2" ></span>
+                <span th:text="'Category: ' + ${book.bookCategory.categoryname}" class="mr-2"></span>
+            </div>
+            <a th:href="@{/user/requestBook(book=${book.bookid})}" class="btn btn-outline-info btn-sm" style="position: relative; left: 90%;">Request Book</a>
+        </div>
+    </div>
+    <p class="mt-4">
+        <a th:href="@{/user/main_menu}" class="btn btn-secondary btn-sm">Main Menu</a>
+    </p>
+</div>
+
+</body>
+</html>
