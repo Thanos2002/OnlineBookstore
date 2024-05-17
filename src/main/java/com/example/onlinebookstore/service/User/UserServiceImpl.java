@@ -33,14 +33,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userDAO.save(user);
-        /*
-        // Create a new UserProfile entity and associate it with the saved User entity
-        UserProfile userProfile = new UserProfile();
-        // Set UserProfile properties
-        //userProfile.setId(user.getId());
-        userProfile.setUsername(user.getUsername());
-        userprofileDAO.save(userProfile);
-         */
     }
 
 

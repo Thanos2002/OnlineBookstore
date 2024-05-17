@@ -47,15 +47,6 @@ public class BookAuthor {
         return Objects.hash(authorid, authorName);
     }
 
-    // Method to remove a Book from the books list
-    public void removeBook(Book book) {
-        if (books != null) {
-            books.remove(book);
-            if (book != null) {
-                book.getBookAuthors().remove(this);
-            }
-        }
-    }
 
     public int getAuthorid() {
         return authorid;

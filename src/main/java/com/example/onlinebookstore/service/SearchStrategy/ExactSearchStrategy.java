@@ -1,10 +1,9 @@
-package com.example.onlinebookstore.service.Strategy;
+package com.example.onlinebookstore.service.SearchStrategy;
 
 import com.example.onlinebookstore.dao.BookDAO;
 import com.example.onlinebookstore.formsdata.SearchFormData;
 import com.example.onlinebookstore.model.Book;
 import com.example.onlinebookstore.model.BookAuthor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

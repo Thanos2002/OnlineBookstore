@@ -1,12 +1,11 @@
-package com.example.onlinebookstore.service.Strategy;
+package com.example.onlinebookstore.service.SearchStrategy;
 
 import com.example.onlinebookstore.dao.BookDAO;
 import com.example.onlinebookstore.formsdata.BookFormData;
 import com.example.onlinebookstore.formsdata.SearchFormData;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 public interface SearchStrategy {
-    List<BookFormData> search(SearchFormData bookFormData , BookDAO bookDAO);
+    List<BookFormData> search(SearchFormData searchFormData , BookDAO bookDAO);
 }

@@ -39,15 +39,6 @@ public class Book {
     private List<UserProfile> requestingUsers;
 
 
-    // Method to remove a BookAuthor from the bookAuthors list
-    public void removeBookAuthor(BookAuthor bookAuthor) {
-        if (bookAuthors != null) {
-            bookAuthors.remove(bookAuthor);
-            if (bookAuthor != null) {
-                bookAuthor.getBooks().remove(this);
-            }
-        }
-    }
     public int getBookid() {
         return bookid;
     }

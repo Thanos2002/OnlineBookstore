@@ -82,7 +82,6 @@ public class UserController {
             model.addAttribute("authors", bookAuthorDAO.findAll());
             model.addAttribute("categories",bookCategoryDAO.findAll());
             return "/user/profile";
-           //return "redirect:/login?saveError=true";
         }
     }
 
@@ -91,7 +90,6 @@ public class UserController {
         UserProfileFormData userProfile = findUserProfile();
         model.addAttribute("userProfile", userProfile);
         List<BookFormData> bookOffers = userProfileService.retrieveBookOffers(userProfile.getUsername());
-        //logger.info("INFO {}",bookOffers.getFirst().getTitle());
         model.addAttribute("bookOffers",bookOffers);
         return "/user/bookOffersList";
     }
@@ -101,7 +99,6 @@ public class UserController {
         UserProfileFormData userProfile = findUserProfile();
         model.addAttribute("userProfile", userProfile);
         List<BookFormData> bookOffers = userProfileService.retrieveBookOffersAll(userProfile.getUsername());
-        //logger.info("INFO {}",bookOffers.getFirst().getTitle());
         model.addAttribute("bookOffers",bookOffers);
 
         return "/user/bookOffersAll";
@@ -134,7 +131,6 @@ public class UserController {
 
     @RequestMapping("/user/saveAuthor")
     public String saveAuthor(@ModelAttribute("bookAuthor") BookAuthor bookAuthor,Model model){
-        logger.info("INFO SAVE AUTHOR");
         try {
             model.addAttribute("successMessageAuthor","Author saved successfully!");
             bookAuthorDAO.save(bookAuthor);
@@ -216,5 +212,19 @@ public class UserController {
         model.addAttribute("books", results);
         return "/user/showSearchResults";
     }
+    @RequestMapping("/user/showRecommendationsForm")
+    public String showRecommendationsForm(Model model){
+        model.addAttribute("recommendationsFormData",new RecommendationsFormData());
+        return "/user/showRecommendationsForm";
+    }
+    @RequestMapping("/user/recommendations")
+    public String recommendations(@ModelAttribute("recommendationsFormData") RecommendationsFormData recommendationsFormData,Model model){
+        UserProfileFormData userProfile = findUserProfile();
+        recommendationsFormData.setUserProfileFormData(userProfile);
+        List<BookFormData> results = userProfileService.reacommendBooks(recommendationsFormData);
+        model.addAttribute("books", results);
+        return "/user/showRecommendations";
+    }
+
 
 }

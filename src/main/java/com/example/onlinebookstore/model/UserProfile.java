@@ -11,11 +11,6 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id; // Primary key for Userprofile
-/*
-    @OneToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-    @MapsId //user_id column
-    private User user; // One-to-one relationship with User, using its id as this entity's id
-*/
     @Column(name="user_name", unique=true)
     private String username;
     @Column(name="phone_number")
@@ -62,16 +57,7 @@ public class UserProfile {
     public void setId(int id) {
         this.id = id;
     }
-/*
-    // Getter and setter for user
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
- */
     public void removeBook(Book book) {
         bookOffers.remove(book);
         book.setUser_profile(null);

@@ -5,11 +5,12 @@ import com.example.onlinebookstore.dao.*;
 import com.example.onlinebookstore.formsdata.*;
 import com.example.onlinebookstore.model.*;
 
-import com.example.onlinebookstore.service.Strategy.ApproximateSearchStrategy;
-import com.example.onlinebookstore.service.Strategy.ExactSearchStrategy;
-import com.example.onlinebookstore.service.Strategy.SearchStrategy;
-import com.example.onlinebookstore.service.Strategy.TemplateSearchStrategy;
-import com.example.onlinebookstore.service.User.UserService;
+import com.example.onlinebookstore.service.RecommendationsStrategy.AuthorsRecommendationsStrategy;
+import com.example.onlinebookstore.service.RecommendationsStrategy.CategoriesRecommendationsStrategy;
+import com.example.onlinebookstore.service.RecommendationsStrategy.RecommendationsStrategy;
+import com.example.onlinebookstore.service.SearchStrategy.ApproximateSearchStrategy;
+import com.example.onlinebookstore.service.SearchStrategy.ExactSearchStrategy;
+import com.example.onlinebookstore.service.SearchStrategy.SearchStrategy;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
@@ -28,17 +29,8 @@ public class UserProfileServiceImpl implements UserProfileService{
     @PersistenceContext
     private EntityManager entityManager;
 
-    //@Autowired
-    //private UserService userService;
-
     @Autowired
     private UserprofileDAO userprofileDAO;
-
-    //@Autowired
-    //private BookAuthorDAO bookAuthorDAO;
-
-    //@Autowired
-    //private BookCategoryDAO bookCategoryDAO;
 
     @Autowired
     private BookDAO bookDAO;
@@ -126,7 +118,6 @@ public class UserProfileServiceImpl implements UserProfileService{
     public List<BookFormData> retrieveBookOffers(String username) {
         // Find the UserProfile entity corresponding to the given username
         Optional<UserProfile> byUsername = userprofileDAO.findByUsername(username);
-        logger.info("INFO {}",byUsername.get().getUsername());
         if (byUsername.isPresent()) {
             // Handle case when user profile with the given username does not exist
             UserProfile userProfile = byUsername.get();
@@ -134,9 +125,7 @@ public class UserProfileServiceImpl implements UserProfileService{
             List<Book> bookOffers = userProfile.getBookOffers();
             // Convert the list of book offers from entities to form data objects (BookFormData)
             List<BookFormData> bookFormDataList = new ArrayList<>();
-            logger.info("INFO inside present");
             for (Book bookOffer : bookOffers) {
-                logger.info("INFO {}",bookOffer.getTitle());
                 BookFormData bookFormData = new BookFormData();
                 bookFormData.setTitle(bookOffer.getTitle());
                 bookFormData.setDescription(bookOffer.getDescription());
@@ -147,9 +136,8 @@ public class UserProfileServiceImpl implements UserProfileService{
                 bookFormData.setBookid(bookOffer.getBookid());
                 bookFormDataList.add(bookFormData);
             }
-            //logger.info("INFO {}",bookFormDataList.getFirst().getTitle());
             return bookFormDataList;
-        }logger.info("INFO null");
+        }
         return null;
     }
 
@@ -160,7 +148,7 @@ public class UserProfileServiceImpl implements UserProfileService{
             List<BookFormData> results = new ArrayList<>();
             for (BookFormData book : bookFormData) {
                 // Retrieve all the book offers that aren't yours
-                if (!book.getUser_profile().getUsername().equals(ownUserprofile.getUsername())) {
+                if (book.getUser_profile()!=null && !book.getUser_profile().getUsername().equals(ownUserprofile.getUsername())) {
                     results.add(book);
                 }
             }return results;
@@ -203,7 +191,6 @@ public class UserProfileServiceImpl implements UserProfileService{
     public void addBookOffer(String username, BookFormData book) {
         Optional<UserProfile> byUsername = userprofileDAO.findByUsername(username);
         Book newbook = new Book();
-        logger.info("ADD 1  {}",byUsername.get().getUsername());
         if (byUsername.isPresent()) {
             UserProfile userProfile = byUsername.get();
             // Setting the book object;
@@ -217,7 +204,6 @@ public class UserProfileServiceImpl implements UserProfileService{
             newbook.setBookCategory(freshCategory);
             // Fetch fresh Authors
             newbook.setBookAuthors(fetchBookAuthors(book.getBookAuthors()));
-
             bookDAO.save(newbook);
             List<Book> bookOffers = userProfile.getBookOffers();
             bookOffers.add(newbook);
@@ -231,11 +217,9 @@ public class UserProfileServiceImpl implements UserProfileService{
     @Override
     public void requestBook(int bookid, String username) {
         Optional<UserProfile> byUsername = userprofileDAO.findByUsername(username);
-        logger.info("requestBook 1 ");
         if (byUsername.isPresent()) {
             UserProfile userProfile = byUsername.get();
             Book book = bookDAO.findByBookid(bookid);
-            logger.info("requestBook 2 {}",book.getTitle());
             // Retrieve the list with the requested books
             List<Book> requestedBooks = userProfile.getRequestedBooks();
             // And add the new requested book
@@ -252,10 +236,8 @@ public class UserProfileServiceImpl implements UserProfileService{
         Optional<UserProfile> byUsername = userprofileDAO.findByUsername(username);
         if (byUsername.isPresent()) {
             UserProfile userProfile = byUsername.get();
-            logger.info("retrieveBookRequests 1");
             // Retrieve the list of book offers associated with the found UserProfile
             List<Book> bookRequests = userProfile.getRequestedBooks();
-            logger.info("retrieveBookRequests  {}",bookRequests.size());
             // Convert the list of book offers from entities to form data objects (BookFormData)
             List<BookFormData> bookFormDataList = new ArrayList<>();
             for (Book bookRequest : bookRequests) {
@@ -270,7 +252,6 @@ public class UserProfileServiceImpl implements UserProfileService{
 
                 bookFormDataList.add(bookFormData);
             }
-            logger.info("retrieveBookRequests  bookFormDataList {}",bookFormDataList.size());
             return bookFormDataList;
         }
         return null;
@@ -306,12 +287,8 @@ public class UserProfileServiceImpl implements UserProfileService{
             if (book != null) {
                 // Remove the Book from the UserProfile's bookOffers list
                 userProfile.removeBook(book);
-                logger.info("DELETE 2 service bookoffers {}",userProfile.getBookOffers().size());
                 // Save the updated UserProfile entity
                 userprofileDAO.save(userProfile);
-                logger.info("DELETE 3 service bookoffers {}",userProfile.getBookOffers().size());
-                // Delete the Book entity
-                //bookDAO.deleteByBookid(bookid);
             }
         }
     }
@@ -351,6 +328,21 @@ public class UserProfileServiceImpl implements UserProfileService{
         searchResults = strategy.search(searchFormData,bookDAO);
         finalResults = retrieveSearchedBooks(searchResults,searchFormData.getUsername());
         return finalResults;
+    }
+    @Override
+    public List<BookFormData> reacommendBooks(RecommendationsFormData recommendationsFormData){
+        List<BookFormData> searchResults,finalResults;
+        RecommendationsStrategy strategy;
+        if(recommendationsFormData.getRecommendationsStrategy().equals("CategoriesRecommendationsStrategy")){
+            strategy = new CategoriesRecommendationsStrategy();
+        }else{
+            strategy = new AuthorsRecommendationsStrategy();
+        }
+        searchResults = strategy.recommend(recommendationsFormData,bookDAO);
+        finalResults = retrieveSearchedBooks(searchResults,recommendationsFormData.getUserProfileFormData().getUsername());
+        return finalResults;
+
+
     }
 
 }

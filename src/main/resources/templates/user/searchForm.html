@@ -36,7 +36,7 @@
         }
         .btn-search {
             border-radius: 20px;
-            padding: 10px 20px;
+            padding: 5px 10px;
             font-size: 18px;
             background-color: #369a60; /* Blue button color */
             color: #fff; /* Text color */
@@ -61,7 +61,7 @@
 </head>
 <body>
 <div class="container">
-    <h2 class="display-4 text-center mb-5">Search Form</h2>
+    <h2 class="display-4 text-center mb-5" style="color: #254662">Search Form</h2>
     <form th:action="@{/user/search}" th:object="${searchFormData}" method="get">
         <div class="form-section">
             <label for="title" class="form-label">Title:</label>
@@ -83,9 +83,10 @@
                 <input class="form-check-input" type="radio" name="searchStrategy" id="exactStrategy" value="ExactSearchStrategy" required>
                 <label class="form-check-label" for="exactStrategy">Exact Search</label>
             </div>
-            <a th:href="@{/user/listAll}" class="btn btn-all btn-sm">Show all book offers</a>
         </div>
-        <button class="btn btn-search btn-block" type="submit">Search</button>
+        <button class="btn btn-search btn-block" type="submit">Search</button><br>
+        <a th:href="@{/user/listAll}" class="btn btn-all btn-sm">Show all book offers</a>
+        <a th:href="@{/user/showRecommendationsForm}" class="btn btn-all btn-sm">Recommended Books</a>
     </form>
 </div>
 </body>

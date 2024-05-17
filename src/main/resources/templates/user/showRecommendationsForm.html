@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2; /* Light grey background */
+            background-size: cover;
+            background-position: center;
+            padding-top: 40px;
+            margin: 0;
+
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px 0px rgba(1, 51, 56, 0.2);
+            padding-bottom: 20px;
+            padding-top:  30px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .btn-search {
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 18px;
+            background-color: #369a60; /* Blue button color */
+            color: #fff; /* Text color */
+            transition: background-color 0.3s;
+        }
+        .btn-search:hover {
+            background-color: #0c4420; /* Darker blue on hover */
+            color: #fff; /* Text color */
+        }
+
+    </style>
+    <title>search</title>
+</head>
+<body>
+<div class="container">
+
+    <h4 class="mb-4">Choose recommendation strategy </h4>
+    <form th:action="@{/user/recommendations}" th:object="${recommendationsFormData}" method="get">
+        <div class="form-section">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="recommendationsStrategy" id="categoryStrategy" value="CategoriesRecommendationsStrategy" required>
+                <label class="form-check-label" for="categoryStrategy">Recommend by favourite categories</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="recommendationsStrategy" id="authorsStrategy" value="AuthorsRecommendationsStrategy" required>
+                <label class="form-check-label" for="authorsStrategy">Recommend by favourite author(s)</label>
+            </div>
+        </div>
+        <button class="btn btn-search btn-block" type="submit">Show</button>
+    </form>
+
+</div>
+
+
+</body>
+</html>

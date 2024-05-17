@@ -1,12 +1,8 @@
 package com.example.onlinebookstore.formsdata;
 
 import com.example.onlinebookstore.model.BookAuthor;
-import com.example.onlinebookstore.model.UserProfile;
-import com.example.onlinebookstore.service.Strategy.ApproximateSearchStrategy;
-import com.example.onlinebookstore.service.Strategy.ExactSearchStrategy;
-import com.example.onlinebookstore.service.Strategy.SearchStrategy;
-import com.example.onlinebookstore.service.UserProfile.UserProfileServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.onlinebookstore.service.SearchStrategy.ApproximateSearchStrategy;
+import com.example.onlinebookstore.service.SearchStrategy.ExactSearchStrategy;
 
 import java.util.List;
 
@@ -15,8 +11,6 @@ public class SearchFormData {
     private String title;
     private List<BookAuthor> bookAuthors;
     private String searchStrategy;
-    private ApproximateSearchStrategy approximateSearchStrategy;
-    private ExactSearchStrategy exactSearchStrategy;
 
     public String getUsername() {
         return username;
