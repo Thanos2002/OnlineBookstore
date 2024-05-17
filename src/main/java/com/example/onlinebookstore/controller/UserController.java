@@ -1,16 +1,8 @@
 package com.example.onlinebookstore.controller;
 
-import com.example.onlinebookstore.dao.BookAuthorDAO;
-import com.example.onlinebookstore.dao.BookCategoryDAO;
-import com.example.onlinebookstore.dao.BookDAO;
-import com.example.onlinebookstore.dao.userDAO;
-import com.example.onlinebookstore.formsdata.BookFormData;
-import com.example.onlinebookstore.formsdata.SearchFormData;
-import com.example.onlinebookstore.formsdata.UserProfileFormData;
-import com.example.onlinebookstore.model.Book;
-import com.example.onlinebookstore.model.BookAuthor;
-import com.example.onlinebookstore.model.BookCategory;
-import com.example.onlinebookstore.model.User;
+import com.example.onlinebookstore.dao.*;
+import com.example.onlinebookstore.formsdata.*;
+import com.example.onlinebookstore.model.*;
 import com.example.onlinebookstore.service.UserProfile.UserProfileService;
 import com.example.onlinebookstore.service.User.UserService;
 import org.slf4j.Logger;
@@ -19,13 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,19 +171,6 @@ public class UserController {
 
     @RequestMapping("/user/deleteRequest")
     public String deleteRequest(@RequestParam("book") int bookid, Model model){
-        /*
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        System.err.println(currentUsername);
-        // Retrieve the user entity using the username
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            model.addAttribute("userProfile", userProfile);
-            userProfileService.deleteBookRequest(userProfile.getUsername(),bookid);
-        }
-
-         */
         UserProfileFormData userProfile = findUserProfile();
         model.addAttribute("userProfile", userProfile);
         userProfileService.deleteBookRequest(userProfile.getUsername(),bookid);
@@ -205,20 +179,6 @@ public class UserController {
 
     @RequestMapping("/user/bookRequests")
     public String showUserBookRequests(Model model){
-        /*
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        System.err.println(currentUsername);
-        // Retrieve the user entity using the username
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            model.addAttribute("userProfile", userProfile);
-            List<BookFormData> bookRequests = userProfileService.retrieveBookRequests(userProfile.getUsername());
-            model.addAttribute("bookRequests",bookRequests);
-        }
-
-         */
         UserProfileFormData userProfile = findUserProfile();
         model.addAttribute("userProfile", userProfile);
         List<BookFormData> bookRequests = userProfileService.retrieveBookRequests(userProfile.getUsername());
@@ -250,23 +210,6 @@ public class UserController {
     }
     @RequestMapping("/user/search")
     public String search(@ModelAttribute("searchFormData") SearchFormData searchFormData, Model model){
-        /*
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        System.err.println(currentUsername);
-        // Retrieve the user entity using the username
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            searchFormData.setUsername(userProfile.getUsername());
-            List<BookFormData> results = userProfileService.searchBooks(searchFormData);
-            model.addAttribute("books", results);
-            logger.info("search : {} ", results.size());
-            logger.info("search authors : {} ", searchFormData.getBookAuthors().size());
-
-        }
-
-         */
         UserProfileFormData userProfile = findUserProfile();
         searchFormData.setUsername(userProfile.getUsername());
         List<BookFormData> results = userProfileService.searchBooks(searchFormData);

@@ -36,6 +36,18 @@
             font-size: 14px;
             color: #6c757d;
         }
+        .btn-search {
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 15px;
+            background-color: #2e79a4; /* Blue button color */
+            color: #fff; /* Text color */
+            transition: background-color 0.3s;
+        }
+        .btn-search:hover {
+            background-color: #10364f; /* Darker blue on hover */
+            color: #fff; /* Text color */
+        }
     </style>
     <title>Offers</title>
 </head>
@@ -58,7 +70,7 @@
         </div>
     </div>
     <p class="mt-4">
-        <a th:href="@{/user/offerform}" class="btn btn-primary btn-sm mr-2">Make offer</a>
+        <a th:href="@{/user/offerform}" class="btn btn-search btn-sm mr-2">Make offer</a>
         <a th:href="@{/user/main_menu}" class="btn btn-secondary btn-sm">Main Menu</a>
     </p>
 </div>
