@@ -4,17 +4,18 @@ import com.example.onlinebookstore.dao.BookDAO;
 import com.example.onlinebookstore.formsdata.SearchFormData;
 import com.example.onlinebookstore.model.Book;
 import com.example.onlinebookstore.model.BookAuthor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public class ExactSearchStrategy extends TemplateSearchStrategy {
 
-    private BookDAO bookDAO;
     @Override
-    protected List<Book> makeInitialListOfBooks(SearchFormData searchFormData) {
+    protected List<Book> makeInitialListOfBooks(SearchFormData searchFormData,BookDAO bookDAO) {
         String title = searchFormData.getTitle();
-        List<BookAuthor> authors = searchFormData.getAuthors(); // Assuming a list of author names
-        return null;//bookDAO.findByExactTitleAndAuthors(title, authors); // Implement method in BookDAO
+        List<BookAuthor> authors = searchFormData.getBookAuthors(); // Assuming a list of author names
+        return bookDAO.findByTitleAndBookAuthors(title, authors);//bookDAO.findByExactTitleAndAuthors(title, authors); // Implement method in BookDAO
     }
 
     @Override

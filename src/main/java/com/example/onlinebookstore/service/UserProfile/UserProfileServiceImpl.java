@@ -5,6 +5,10 @@ import com.example.onlinebookstore.dao.*;
 import com.example.onlinebookstore.formsdata.*;
 import com.example.onlinebookstore.model.*;
 
+import com.example.onlinebookstore.service.Strategy.ApproximateSearchStrategy;
+import com.example.onlinebookstore.service.Strategy.ExactSearchStrategy;
+import com.example.onlinebookstore.service.Strategy.SearchStrategy;
+import com.example.onlinebookstore.service.Strategy.TemplateSearchStrategy;
 import com.example.onlinebookstore.service.User.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,20 +28,23 @@ public class UserProfileServiceImpl implements UserProfileService{
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private UserService userService;
+    //@Autowired
+    //private UserService userService;
 
     @Autowired
     private UserprofileDAO userprofileDAO;
 
-    @Autowired
-    private BookAuthorDAO bookAuthorDAO;
+    //@Autowired
+    //private BookAuthorDAO bookAuthorDAO;
 
-    @Autowired
-    private BookCategoryDAO bookCategoryDAO;
+    //@Autowired
+    //private BookCategoryDAO bookCategoryDAO;
 
     @Autowired
     private BookDAO bookDAO;
+
+
+
 
 
     @Transactional
@@ -49,6 +56,7 @@ public class UserProfileServiceImpl implements UserProfileService{
         }else{
             userProfile = new UserProfile();
         }
+        logger.info("transform data {}: ",userProfileFormData.getId());
         userProfile.setId(userProfileFormData.getId());
         userProfile.setUsername(userProfileFormData.getUsername());
         userProfile.setPhone_number(userProfileFormData.getPhoneNumber());
@@ -145,6 +153,21 @@ public class UserProfileServiceImpl implements UserProfileService{
         return null;
     }
 
+    public List<BookFormData> retrieveSearchedBooks(List<BookFormData> bookFormData, String username){
+        Optional<UserProfile> byUsername = userprofileDAO.findByUsername(username);
+        if (byUsername.isPresent()) {
+            UserProfile ownUserprofile = byUsername.get();
+            List<BookFormData> results = new ArrayList<>();
+            for (BookFormData book : bookFormData) {
+                // Retrieve all the book offers that aren't yours
+                if (!book.getUser_profile().getUsername().equals(ownUserprofile.getUsername())) {
+                    results.add(book);
+                }
+            }return results;
+        }
+        return null;
+    }
+
     @Override
     public List<BookFormData> retrieveBookOffersAll(String username) {
         // Find the UserProfile entity corresponding to the given username
@@ -152,15 +175,12 @@ public class UserProfileServiceImpl implements UserProfileService{
         if (byUsername.isPresent()) {
             UserProfile ownUserprofile = byUsername.get();
             List<UserProfile> userProfiles = userprofileDAO.findAll();
-            logger.info("RetrieveAll ownUserprofile {}",ownUserprofile.getUsername());
-            logger.info("RetrieveAll userprofiles {}", userProfiles.size());
             List<BookFormData> bookFormDataList = new ArrayList<>();
             for (UserProfile userProfile : userProfiles) {
+                // Retrieve all the book offers that aren't yours
                 if (!userProfile.getUsername().equals(ownUserprofile.getUsername())) {
-                    logger.info("RetrieveAll getUsername {}", userProfile.getUsername());
                     List<Book> bookOffers = userProfile.getBookOffers();
                     for (Book bookOffer : bookOffers) {
-                        logger.info("RetrieveAll {}", bookOffer.getTitle());
                         BookFormData bookFormData = new BookFormData();
                         bookFormData.setTitle(bookOffer.getTitle());
                         bookFormData.setDescription(bookOffer.getDescription());
@@ -173,7 +193,7 @@ public class UserProfileServiceImpl implements UserProfileService{
                     }
                 }
             }return bookFormDataList;
-        }logger.info("INFO null");
+        }
         return null;
     }
 
@@ -316,4 +336,21 @@ public class UserProfileServiceImpl implements UserProfileService{
             }
         }
     }
+
+    @Override
+    public List<BookFormData> searchBooks(SearchFormData searchFormData){
+        List<BookFormData> searchResults,finalResults;
+        SearchStrategy strategy;
+        if(searchFormData.getSearchStrategy().equals("ApproximateSearchStrategy")){
+            strategy = new ApproximateSearchStrategy();
+        }else if(searchFormData.getSearchStrategy().equals("ExactSearchStrategy")){
+            strategy = new ExactSearchStrategy();
+        }else{
+            strategy = new ApproximateSearchStrategy();
+        }
+        searchResults = strategy.search(searchFormData,bookDAO);
+        finalResults = retrieveSearchedBooks(searchResults,searchFormData.getUsername());
+        return finalResults;
+    }
+
 }

@@ -3,7 +3,9 @@ package com.example.onlinebookstore.controller;
 import com.example.onlinebookstore.dao.BookAuthorDAO;
 import com.example.onlinebookstore.dao.BookCategoryDAO;
 import com.example.onlinebookstore.dao.BookDAO;
+import com.example.onlinebookstore.dao.userDAO;
 import com.example.onlinebookstore.formsdata.BookFormData;
+import com.example.onlinebookstore.formsdata.SearchFormData;
 import com.example.onlinebookstore.formsdata.UserProfileFormData;
 import com.example.onlinebookstore.model.Book;
 import com.example.onlinebookstore.model.BookAuthor;
@@ -41,9 +43,10 @@ public class UserController {
     BookCategoryDAO bookCategoryDAO;
     @Autowired
     BookDAO bookDAO;
+    @Autowired
+    userDAO userDAO;
 
-    @RequestMapping("/user/main_menu")
-    public String getUserMainMenu(Model model){
+    public UserProfileFormData findUserProfile(){   // Helper method
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         System.err.println(currentUsername);
@@ -51,23 +54,23 @@ public class UserController {
         Optional<User> currentUser = userService.findById(currentUsername);
         if (currentUser.isPresent()) {
             UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            model.addAttribute("userProfile", userProfile);
+            return userProfile;
         }
+        return null;
+    }
+
+    @RequestMapping("/user/main_menu")
+    public String getUserMainMenu(Model model){
+        UserProfileFormData userProfile = findUserProfile();
+        model.addAttribute("userProfile", userProfile);
 
         return "/user/main_menu";
     }
 
     @RequestMapping( "user/retrieveProfile")
     public String retrieveProfile(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        System.err.println(currentUsername);
-        // Retrieve the user entity using the username
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            model.addAttribute("userProfile", userProfile);
-        }
+        UserProfileFormData userProfile = findUserProfile();
+        model.addAttribute("userProfile", userProfile);
         return "/user/profileInfo";
     }
 
@@ -81,12 +84,12 @@ public class UserController {
     }
 
     @RequestMapping("/user/saveProfile")
-    public String saveProfile(@ModelAttribute("userprofile") UserProfileFormData userProfileFormData,Model model,@RequestParam("favouriteCategories") List<BookCategory> favouriteCategories){
+    public String saveProfile(@ModelAttribute("userprofile") UserProfileFormData userProfileFormData,Model model){
         try {
             userProfileService.save(userProfileFormData);
             model.addAttribute("successMessage","Profile edited successfully!");
             return "/auth/signin";
-        } catch (Exception e) {
+        }catch (Exception e) {
             model.addAttribute("errorMessage","Error: Unable to save profile information!");
             logger.error("Error saving profile: {}", e.getMessage(), e);
             model.addAttribute("authors", bookAuthorDAO.findAll());
@@ -98,31 +101,22 @@ public class UserController {
 
     @RequestMapping("/user/list")
     public String listBookOffers(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            model.addAttribute("userprofile", userProfile);
-
-            List<BookFormData> bookOffers = userProfileService.retrieveBookOffers(userProfile.getUsername());
-            //logger.info("INFO {}",bookOffers.getFirst().getTitle());
-            model.addAttribute("bookOffers",bookOffers);
-        }
+        UserProfileFormData userProfile = findUserProfile();
+        model.addAttribute("userProfile", userProfile);
+        List<BookFormData> bookOffers = userProfileService.retrieveBookOffers(userProfile.getUsername());
+        //logger.info("INFO {}",bookOffers.getFirst().getTitle());
+        model.addAttribute("bookOffers",bookOffers);
         return "/user/bookOffersList";
     }
 
     @RequestMapping("/user/listAll")
     public String listBookOffersAll(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            List<BookFormData> bookOffers = userProfileService.retrieveBookOffersAll(userProfile.getUsername());
-            //logger.info("INFO {}",bookOffers.getFirst().getTitle());
-            model.addAttribute("bookOffers",bookOffers);
-        }
+        UserProfileFormData userProfile = findUserProfile();
+        model.addAttribute("userProfile", userProfile);
+        List<BookFormData> bookOffers = userProfileService.retrieveBookOffersAll(userProfile.getUsername());
+        //logger.info("INFO {}",bookOffers.getFirst().getTitle());
+        model.addAttribute("bookOffers",bookOffers);
+
         return "/user/bookOffersAll";
     }
 
@@ -137,16 +131,9 @@ public class UserController {
     }
 
     @RequestMapping("/user/saveoffer")
-    public String saveOffer(@ModelAttribute("BookOffer") BookFormData bookFormData,Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            userProfileService.addBookOffer(userProfile.getUsername(),bookFormData);
-            logger.info("SAVE 2 {}",userProfile.getUsername());
-            //userProfileService.save(userProfile);
-        }
+    public String saveOffer(@ModelAttribute("bookOffer") BookFormData bookFormData,Model model){
+        UserProfileFormData userProfile = findUserProfile();
+        userProfileService.addBookOffer(userProfile.getUsername(),bookFormData);
 
         return "redirect:/user/main_menu";
     }
@@ -176,43 +163,28 @@ public class UserController {
 
     @RequestMapping("/user/deleteoffer")
     public String deleteOffer(@RequestParam("book") int bookid, Model model){
-        logger.info("DELETE 1 id {}",bookid);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Optional<User> currentUser = userService.findById(currentUsername);
-
-        if (currentUser.isPresent()) {
-            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-            userProfileService.deleteBookOffers(userProfile.getUsername(),bookid);
-
-            logger.info("DELETE 2 bookoffers controller {}", userProfile.getBookOffers().size());
-            //userProfileService.save(userProfile);
-            logger.info("DELETE 3 {}",userProfile.getBookOffers().size());
-
-        }
+        UserProfileFormData userProfile = findUserProfile();
+        userProfileService.deleteBookOffers(userProfile.getUsername(),bookid);
         return "redirect:/user/list";
     }
 
     @RequestMapping("/user/requestBook")
     public String requestBook(@RequestParam("book") int bookid,Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Optional<User> currentUser = userService.findById(currentUsername);
-        if (currentUser.isPresent()) {
-            try {
-                UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
-                model.addAttribute("userProfile",userProfile);
-                userProfileService.requestBook(bookid,userProfile.getUsername());
-                model.addAttribute("successMessage","Requested successfully!");
-            }catch (Exception e){
-                model.addAttribute("successMessage","Book already requested!");
-                logger.error("Error saving profile: {}", e.getMessage(), e);
-            }
-        }return "/user/main_menu";
+        try {
+            UserProfileFormData userProfile = findUserProfile();
+            model.addAttribute("userProfile",userProfile);
+            userProfileService.requestBook(bookid,userProfile.getUsername());
+            model.addAttribute("successMessage","Requested successfully!");
+        }catch (Exception e){
+            model.addAttribute("successMessage","Book already requested!");
+            logger.error("Error saving profile: {}", e.getMessage(), e);
+        }
+        return "/user/main_menu";
     }
 
     @RequestMapping("/user/deleteRequest")
     public String deleteRequest(@RequestParam("book") int bookid, Model model){
+        /*
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         System.err.println(currentUsername);
@@ -223,11 +195,17 @@ public class UserController {
             model.addAttribute("userProfile", userProfile);
             userProfileService.deleteBookRequest(userProfile.getUsername(),bookid);
         }
+
+         */
+        UserProfileFormData userProfile = findUserProfile();
+        model.addAttribute("userProfile", userProfile);
+        userProfileService.deleteBookRequest(userProfile.getUsername(),bookid);
         return "redirect:/user/bookRequests";
     }
 
     @RequestMapping("/user/bookRequests")
     public String showUserBookRequests(Model model){
+        /*
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         System.err.println(currentUsername);
@@ -239,6 +217,12 @@ public class UserController {
             List<BookFormData> bookRequests = userProfileService.retrieveBookRequests(userProfile.getUsername());
             model.addAttribute("bookRequests",bookRequests);
         }
+
+         */
+        UserProfileFormData userProfile = findUserProfile();
+        model.addAttribute("userProfile", userProfile);
+        List<BookFormData> bookRequests = userProfileService.retrieveBookRequests(userProfile.getUsername());
+        model.addAttribute("bookRequests",bookRequests);
         return "/user/bookRequests";
     }
 
@@ -258,24 +242,36 @@ public class UserController {
         return "/user/main_menu";
     }
 
-    @RequestMapping("/offers2")
-    public String deleteBookOffer(String username , int bookid , Model model){
-        userProfileService.deleteBookOffers(username,bookid);
-        model.addAttribute("bookOffer",bookid);
-        return "/user/main_menu";
-    }
-
-    @RequestMapping("/request_form3")
-    public String deleteBookRequest(String username ,int bookid, Model model){
-        userProfileService.deleteBookRequest(username,bookid);
-        model.addAttribute("requestedBook",bookid);
-        return "/user/main_menu";
-    }
-
-    @RequestMapping("/search_form")
+    @RequestMapping("/user/showSearchForm")
     public String showSearchForm(Model model){
-        return "/search_form";
+        model.addAttribute("bookauthors", bookAuthorDAO.findAll());
+        model.addAttribute("searchFormData",new SearchFormData());
+        return "/user/searchForm";
     }
+    @RequestMapping("/user/search")
+    public String search(@ModelAttribute("searchFormData") SearchFormData searchFormData, Model model){
+        /*
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        System.err.println(currentUsername);
+        // Retrieve the user entity using the username
+        Optional<User> currentUser = userService.findById(currentUsername);
+        if (currentUser.isPresent()) {
+            UserProfileFormData userProfile = userProfileService.retrieveProfile(currentUser.get().getId());
+            searchFormData.setUsername(userProfile.getUsername());
+            List<BookFormData> results = userProfileService.searchBooks(searchFormData);
+            model.addAttribute("books", results);
+            logger.info("search : {} ", results.size());
+            logger.info("search authors : {} ", searchFormData.getBookAuthors().size());
 
+        }
+
+         */
+        UserProfileFormData userProfile = findUserProfile();
+        searchFormData.setUsername(userProfile.getUsername());
+        List<BookFormData> results = userProfileService.searchBooks(searchFormData);
+        model.addAttribute("books", results);
+        return "/user/showSearchResults";
+    }
 
 }

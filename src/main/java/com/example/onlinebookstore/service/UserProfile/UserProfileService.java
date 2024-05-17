@@ -1,6 +1,7 @@
 package com.example.onlinebookstore.service.UserProfile;
 
 import com.example.onlinebookstore.formsdata.BookFormData;
+import com.example.onlinebookstore.formsdata.SearchFormData;
 import com.example.onlinebookstore.formsdata.UserProfileFormData;
 import com.example.onlinebookstore.model.UserProfile;
 
@@ -19,6 +20,7 @@ public interface UserProfileService {
     public List<UserProfileFormData> retrieveRequestingUsers(int bookid);
     public void deleteBookOffers(String username,int bookid);
     public void deleteBookRequest(String username ,int bookid);
+    public List<BookFormData> searchBooks(SearchFormData searchFormData);
 
 
 }
