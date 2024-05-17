@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #eff5ff; /* Light grey background */
+            padding-top: 40px;
+        }
+        .book {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .book-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333; /* Dark text color */
+            margin-bottom: 10px;
+        }
+
+        .book-description {
+            font-size: 18px;
+            color: #6c757d; /* Grey text color */
+            margin-bottom: 15px;
+        }
+
+        .book-details {
+            font-size: 16px;
+            color: #6c757d; /* Grey text color */
+            margin-bottom: 10px;
+        }
+    </style>
+    <title>search</title>
+</head>
+<body>
+<div class="container">
+
+    <h3 class="mb-4">Search Results</h3>
+
+    <div class="row">
+        <div th:each="book : ${books}" class="col-md-6">
+            <div class="book">
+                <div class="book-title" th:text="${book.title}"></div>
+                <div class="book-description" th:text="${book.description}"></div>
+                <div class="book-details">
+                    <span>Authors: </span>
+                    <span th:each="bookAuthor : ${book.bookAuthors}" th:text="${bookAuthor.authorName} + ', '"></span>
+                </div>
+                <div class="book-details" th:text="'Category: ' + ${book.bookCategory.categoryname}"></div>
+                <div class="mt-3">
+                    <a th:href="@{/user/requestBook(book=${book.bookid})}" class="btn btn-outline-info btn-sm" style="position: relative; ">Request Book</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a th:href="@{/user/main_menu}" class="btn btn-secondary btn-sm">Main Menu</a>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>Book Search Form</title>
+    <style>
+        /* Custom CSS styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2; /* Light grey background */
+            background-size: cover;
+            background-position: center;
+            padding-top: 40px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 20px;
+        }
+        .custom-select {
+            border-radius: 20px;
+        }
+        .btn-search {
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #369a60; /* Blue button color */
+            color: #fff; /* Text color */
+            transition: background-color 0.3s;
+        }
+        .btn-all{
+            border-radius: 20px;
+            padding: 5px 20px;
+            font-size: 16px;
+            background-color: #2e79a4; /* Blue button color */
+            color: #fff; /* Text color */
+            transition: background-color 0.3s;
+        }
+        .btn-search:hover {
+            background-color: #0c4420; /* Darker blue on hover */
+            color: #fff; /* Text color */
+        }.btn-all:hover {
+             background-color: #10364f; /* Darker blue on hover */
+             color: #fff; /* Text color */
+         }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="display-4 text-center mb-5">Search Form</h2>
+    <form th:action="@{/user/search}" th:object="${searchFormData}" method="get">
+        <div class="form-section">
+            <label for="title" class="form-label">Title:</label>
+            <input class="form-control" type="text" id="title" name="title" th:value="${searchFormData.title}" placeholder="Search by Title" aria-label="Title" required>
+        </div>
+        <div class="form-section">
+            <label for="bookAuthors" class="form-label">Author(s):</label>
+            <select class="custom-select" id="bookAuthors" name="bookAuthors" multiple required>
+                <option th:each="author : ${bookauthors}" th:value="${author.authorid}" th:text="${author.authorName}" th:field="*{bookAuthors}"></option>
+            </select>
+        </div>
+        <div class="form-section">
+            <label class="form-label">Search Strategy:</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="searchStrategy" id="approximateStrategy" value="ApproximateSearchStrategy" required>
+                <label class="form-check-label" for="approximateStrategy">Approximate Search</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="searchStrategy" id="exactStrategy" value="ExactSearchStrategy" required>
+                <label class="form-check-label" for="exactStrategy">Exact Search</label>
+            </div>
+            <a th:href="@{/user/listAll}" class="btn btn-all btn-sm">Show all book offers</a>
+        </div>
+        <button class="btn btn-search btn-block" type="submit">Search</button>
+    </form>
+</div>
+</body>
+</html>
