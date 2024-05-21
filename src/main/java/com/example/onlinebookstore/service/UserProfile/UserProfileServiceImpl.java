@@ -147,9 +147,12 @@ public class UserProfileServiceImpl implements UserProfileService{
             UserProfile ownUserprofile = byUsername.get();
             List<BookFormData> results = new ArrayList<>();
             for (BookFormData book : bookFormData) {
-                // Retrieve all the book offers that aren't yours
-                if (book.getUser_profile()!=null && !book.getUser_profile().getUsername().equals(ownUserprofile.getUsername())) {
-                    results.add(book);
+                if (book.getUser_profile() != null && book.getUser_profile().getUsername() != null) {
+                    String bookOwnerUsername = book.getUser_profile().getUsername();
+                    // Retrieve all the book offers that aren't yours
+                    if (!bookOwnerUsername.equals(ownUserprofile.getUsername())) {
+                        results.add(book);
+                    }
                 }
             }return results;
         }

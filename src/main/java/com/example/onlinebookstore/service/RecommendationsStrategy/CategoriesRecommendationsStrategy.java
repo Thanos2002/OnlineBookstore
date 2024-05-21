@@ -16,7 +16,7 @@ import java.util.List;
 public class CategoriesRecommendationsStrategy extends TemplateRecommendationsStrategy {
 
     @Override
-    protected List<Book> makeListOfBooks(RecommendationsFormData recomData, BookDAO bookDAO) {
+    public List<Book> makeListOfBooks(RecommendationsFormData recomData, BookDAO bookDAO) {
         List<BookCategory> favouriteCategories = recomData.getUserProfileFormData().getFavouriteCategories();
         List<Book> recommendedBooks = new ArrayList<>();
         for(BookCategory bookCategory: favouriteCategories){

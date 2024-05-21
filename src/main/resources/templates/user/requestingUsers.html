@@ -31,11 +31,6 @@
             font-size: 16px;
             color: #6c757d;
         }
-
-        .book-details {
-            font-size: 14px;
-            color: #6c757d;
-        }
     </style>
     <title>Requests</title>
 </head>
@@ -48,6 +43,7 @@
         <div th:each="user : ${requestingUsers}" class="book">
             <div class="book-title" th:text="${user.username}"></div>
             <div class="book-description" th:text="'Has requested the book: ' + ${requestedBook.title}"></div>
+            <div class="book-description" th:text="'Contact information: ' + ${user.phoneNumber}"></div>
         </div>
     </div>
     <p class="mt-4">

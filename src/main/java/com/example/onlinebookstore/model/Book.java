@@ -15,7 +15,8 @@ public class Book {
     @Column(name="title")
     private String title;
 
-    @Column(name="description")
+    @Lob
+    @Column(name="description",length = 100000)
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)

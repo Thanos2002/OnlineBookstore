@@ -190,7 +190,7 @@ public class UserController {
         model.addAttribute("requestedBook",book);
         return "/user/requestingUsers";
     }
-
+    //not implemented (acceptRequest)
     @RequestMapping("/request_form2")
     public String acceptRequest(String username, int bookid, Model model){
         userProfileService.requestBook(bookid,username);
