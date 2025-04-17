@@ -4,7 +4,8 @@ exchange used books for free.
 ### List of technologies, frameworks and tools considered for the development of the project
 - Java
 - JavaScript 
-- Spring Boot 
+- Spring Boot
+- Bootstrap
 - MySql
 - Intellij 
 #### *Project is under development!*
