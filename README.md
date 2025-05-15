@@ -8,4 +8,3 @@ exchange used books for free.
 - Bootstrap
 - MySql
 - Intellij 
-#### *Project is under development!*
